@@ -27,15 +27,16 @@ import com.djrapitops.plan.extension.DataExtension;
 import java.util.Optional;
 
 /**
- * Factory for DataExtension.
+ * Factory for the GriefDefender DataExtension.
  *
+ * @author Vankka
  * @author Rsl1122
  */
-public class NewExtensionFactory {
+public class GriefDefenderExtensionFactory {
 
     private boolean isAvailable() {
         try {
-            Class.forName("");
+            Class.forName("com.griefdefender.api.GriefDefender");
             return true;
         } catch (ClassNotFoundException e) {
             return false;
@@ -44,7 +45,7 @@ public class NewExtensionFactory {
 
     public Optional<DataExtension> createExtension() {
         if (isAvailable()) {
-            return Optional.of(new NewExtension());
+            return Optional.of(new GriefDefenderExtension());
         }
         return Optional.empty();
     }
