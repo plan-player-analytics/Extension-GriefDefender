@@ -6,7 +6,7 @@
 
     <groupId>com.djrapitops</groupId>
     <artifactId>Extension-GriefDefender</artifactId>
-    <version>R0.1</version>
+    <version>R0.2</version>
     <build>
         <plugins>
             <plugin>
@@ -70,6 +70,7 @@
             <groupId>com.github.bloodmc</groupId>
             <artifactId>GriefDefenderAPI</artifactId>
             <version>2663329cb5</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Platforms -->
