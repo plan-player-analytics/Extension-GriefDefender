@@ -25,6 +25,7 @@ package com.djrapitops.extension;
 import com.djrapitops.plan.extension.CallEvents;
 import com.djrapitops.plan.extension.DataExtension;
 import com.djrapitops.plan.extension.ElementOrder;
+import com.djrapitops.plan.extension.NotReadyException;
 import com.djrapitops.plan.extension.annotation.*;
 import com.djrapitops.plan.extension.icon.Color;
 import com.djrapitops.plan.extension.icon.Family;
@@ -37,7 +38,6 @@ import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.data.PlayerData;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -72,7 +72,11 @@ public class GriefDefenderExtension implements DataExtension {
         return api.getAllPlayerClaims(playerUUID);
     }
     private PlayerData getPlayerData(UUID playerUUID) {
-        return Objects.requireNonNull(api.getUser(playerUUID)).getPlayerData();
+        try {
+            return api.getUser(playerUUID).getPlayerData();
+        } catch (NullPointerException e) {
+            throw new NotReadyException();
+        }
     }
 
     @NumberProvider(
@@ -88,27 +92,23 @@ public class GriefDefenderExtension implements DataExtension {
     @StringProvider(
             text = "Claim Type",
             description = "Basic + Town + SUBDIVISION + Admin",
-            iconName = "map-marker",
+            iconName = "sign",
             iconColor = Color.BLUE,
             showInPlayerTable = true
     )
     public String claimType(UUID playerUUID) {
-        if (getClaimsOf(playerUUID) != null) {
-            getClaimsOf(playerUUID)
-                    .forEach(this::countType);
+        int basic=0, town=0, sub=0, admin=0;
+        List<Claim> claimsList = getClaimsOf(playerUUID);
+        for (Claim claim : claimsList) {
+            if (claim.isBasicClaim()) {
+                basic++;
+            } else if (claim.isTown()) {
+                town++;
+            } else if (claim.isSubdivision()) {
+                sub++;
+            } else admin++;
         }
-        return b + "+" + t + "+" + s + "+" + a ;
-    }
-
-    int b=0, t=0, s=0, a=0;
-    public void countType(Claim claim) {
-        if (claim.isBasicClaim()) {
-            b++;
-        } else if(claim.isTown()) {
-            t++;
-        } else if(claim.isSubdivision()) {
-            s++;
-        } else a++;
+        return basic + "+" + town + "+" + sub + "+" + admin ;
     }
 
     @NumberProvider(
@@ -125,32 +125,61 @@ public class GriefDefenderExtension implements DataExtension {
                 .sum();
     }
 
-    @StringProvider(
-            text = "Claim Block",
-            description = "If Eco is being used, the Blocks player can buy will be showed,\n " +
-                    "or will show like [initial + Bonus + Accrued + Reaming]",
-            iconName = "map",
+    @NumberProvider(
+            text = "Inital Blocks",
+            description = "Inital Blocks that player first play on your server",
+            iconName = "cube",
             iconColor = Color.BLUE_GREY,
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public String claimBlock(UUID playerUUID) {
-        if (api.isEconomyModeEnabled()) {
-            return "Remaining Blocks: " + getPlayerData(playerUUID).getRemainingClaimBlocks();
-        }
-        return getPlayerData(playerUUID).getInitialClaimBlocks() + "+" +
-                getPlayerData(playerUUID).getBonusClaimBlocks() + "+" +
-                getPlayerData(playerUUID).getAccruedClaimBlocks() + "+" +
-                getPlayerData(playerUUID).getRemainingClaimBlocks();
+    public int initBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getInitialClaimBlocks();
+    }
+
+    @NumberProvider(
+            text = "Bnous Blocks",
+            description = "Bnous Blocks that player get reward",
+            iconName = "medal",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int bnousBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getBonusClaimBlocks();
+    }
+
+    @NumberProvider(
+            text = "Accrued Blocks",
+            description = "Accrued Blocks that player accrue during the game time",
+            iconName = "cubes",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int accruedBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getAccruedClaimBlocks();
+    }
+
+    @NumberProvider(
+            text = "Remaining Blocks",
+            description = "Remaining Blocks that player has at present",
+            iconName = "square",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int remainingBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getRemainingClaimBlocks();
     }
 
     @TableProvider(tableColor = Color.BLUE_GREY)
     @Tab("Claims")
     public Table claimTable(UUID playerUUID) {
         Table.Factory table = Table.builder()
-                .columnOne("Name", Icon.called("map-marker").build())
-                .columnTwo("Type", Icon.called("map-marker").build())
-                .columnThree("Pos", Icon.called("map-marker").build())
+                .columnOne("Name", Icon.called("address-book").build())
+                .columnTwo("Type", Icon.called("sign").build())
+                .columnThree("Location", Icon.called("map-marker").build())
                 .columnFour("Area", Icon.called("map").of(Family.REGULAR).build());
 
         getClaimsOf(playerUUID).stream()
