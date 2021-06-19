@@ -52,12 +52,6 @@
             <version>920a610</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Needed by GD -->
-        <dependency>
-            <groupId>com.flowpowered</groupId>
-            <artifactId>flow-math</artifactId>
-            <version>1.0.3</version>
-        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
