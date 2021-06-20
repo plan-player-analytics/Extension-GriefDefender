@@ -6,7 +6,7 @@
 
     <groupId>com.djrapitops</groupId>
     <artifactId>Extension-GriefDefender</artifactId>
-    <version>R0.2</version>
+    <version>R0.3</version>
     <build>
         <plugins>
             <plugin>
@@ -21,35 +21,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0-M5</version>
             </plugin>
         </plugins>
     </build>
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-
-        <!-- Platforms -->
-
-        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <!--<repository>-->
-        <!--<id>sponge-repo</id>-->
-        <!--<url>https://repo.spongepowered.org/maven</url>-->
-        <!--</repository>-->
-        <!--<repository>-->
-        <!--<id>bungeecord-repo</id>-->
-        <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-        <!--</repository>-->
-        <!--<repository>-->
-        <!--<id>velocity-repo</id>-->
-        <!--<url>https://repo.velocitypowered.com/snapshots/</url>-->
-        <!--</repository>-->
+        <repository>
+            <id>sponge-repo</id>
+            <url>https://repo.spongepowered.org/maven</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <repository>
             <id>plan-repo</id>
             <url>https://repo.playeranalytics.net/releases</url>
@@ -60,61 +49,48 @@
         <dependency> <!-- Plan API -->
             <groupId>com.djrapitops</groupId>
             <artifactId>plan-api</artifactId>
-            <version>5.2-R0.1</version>
+            <version>5.2-R0.9</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Plugin API Dependency -->
         <dependency>
             <groupId>com.github.bloodmc</groupId>
-            <artifactId>GriefDefenderAPI</artifactId>
-            <version>2663329cb5</version>
+            <artifactId>GriefDefenderApi</artifactId>
+            <version>920a610</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Platforms -->
-
+		
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.spongepowered</groupId>-->
-        <!--<artifactId>spongeapi</artifactId>-->
-        <!--<version>7.1.0</version>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>net.md-5</groupId>-->
-        <!--<artifactId>bungeecord-api</artifactId>-->
-        <!--<version>1.12-SNAPSHOT</version>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>com.velocitypowered</groupId>-->
-        <!--<artifactId>velocity-api</artifactId>-->
-        <!--<version>1.0-SNAPSHOT</version>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>7.1.0</version>
+        </dependency>
+		
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.5.1</version>
+            <version>5.7.2</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.0.0</version>
+            <version>3.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>3.0.0</version>
+            <version>3.10.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

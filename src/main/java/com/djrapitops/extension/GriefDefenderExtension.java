@@ -14,7 +14,7 @@
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT.IN NO EVENT SHALL THE
     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -25,15 +25,17 @@ package com.djrapitops.extension;
 import com.djrapitops.plan.extension.CallEvents;
 import com.djrapitops.plan.extension.DataExtension;
 import com.djrapitops.plan.extension.ElementOrder;
+import com.djrapitops.plan.extension.NotReadyException;
 import com.djrapitops.plan.extension.annotation.*;
 import com.djrapitops.plan.extension.icon.Color;
 import com.djrapitops.plan.extension.icon.Family;
 import com.djrapitops.plan.extension.icon.Icon;
 import com.djrapitops.plan.extension.table.Table;
 import com.flowpowered.math.vector.Vector3i;
+import com.griefdefender.api.Core;
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
-import org.bukkit.Location;
+import com.griefdefender.api.data.PlayerData;
 
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +55,10 @@ import java.util.UUID;
 )
 public class GriefDefenderExtension implements DataExtension {
 
+    private final Core api;
+
     public GriefDefenderExtension() {
+        api = GriefDefender.getCore();
     }
 
     @Override
@@ -64,11 +69,14 @@ public class GriefDefenderExtension implements DataExtension {
     }
 
     private List<Claim> getClaimsOf(UUID playerUUID) {
-        return GriefDefender.getCore().getAllPlayerClaims(playerUUID);
+        return api.getAllPlayerClaims(playerUUID);
     }
-
-    private String formatLocation(Vector3i greaterBoundaryCorner) {
-        return "x: " + greaterBoundaryCorner.getX() + " z: " + greaterBoundaryCorner.getZ();
+    private PlayerData getPlayerData(UUID playerUUID) {
+        try {
+            return api.getUser(playerUUID).getPlayerData();
+        } catch (NullPointerException e) {
+            throw new NotReadyException();
+        }
     }
 
     @NumberProvider(
@@ -79,6 +87,28 @@ public class GriefDefenderExtension implements DataExtension {
     )
     public long claimCount(UUID playerUUID) {
         return getClaimsOf(playerUUID).size();
+    }
+
+    @StringProvider(
+            text = "Claim Type",
+            description = "Basic + Town + SUBDIVISION + Admin",
+            iconName = "sign",
+            iconColor = Color.BLUE,
+            showInPlayerTable = true
+    )
+    public String claimType(UUID playerUUID) {
+        int basic=0, town=0, sub=0, admin=0;
+        List<Claim> claimsList = getClaimsOf(playerUUID);
+        for (Claim claim : claimsList) {
+            if (claim.isBasicClaim()) {
+                basic++;
+            } else if (claim.isTown()) {
+                town++;
+            } else if (claim.isSubdivision()) {
+                sub++;
+            } else admin++;
+        }
+        return "basic: " + basic + ",town: " + town + ",sub claims: " + sub + ",admin: " + admin ;
     }
 
     @NumberProvider(
@@ -95,19 +125,78 @@ public class GriefDefenderExtension implements DataExtension {
                 .sum();
     }
 
+    @NumberProvider(
+            text = "Initial Blocks",
+            description = "Initial Blocks that player first play on your server",
+            iconName = "cube",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int initialBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getInitialClaimBlocks();
+    }
+
+    @NumberProvider(
+            text = "Bonus Blocks",
+            description = "Bonus Blocks that player get reward",
+            iconName = "medal",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int bonusBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getBonusClaimBlocks();
+    }
+
+    @NumberProvider(
+            text = "Accrued Blocks",
+            description = "Accrued Blocks that player accrue during the game time",
+            iconName = "cubes",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int accruedBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getAccruedClaimBlocks();
+    }
+
+    @NumberProvider(
+            text = "Remaining Blocks",
+            description = "Remaining Blocks that player has at present",
+            iconName = "square",
+            iconColor = Color.BLUE_GREY,
+            iconFamily = Family.REGULAR,
+            showInPlayerTable = true
+    )
+    public int remainingBlocks(UUID playerUUID) {
+        return getPlayerData(playerUUID).getRemainingClaimBlocks();
+    }
+
     @TableProvider(tableColor = Color.BLUE_GREY)
     @Tab("Claims")
     public Table claimTable(UUID playerUUID) {
         Table.Factory table = Table.builder()
-                .columnOne("Claim", Icon.called("map-marker").build())
-                .columnTwo("Area", Icon.called("map").of(Family.REGULAR).build());
+                .columnOne("Name", Icon.called("address-book").build())
+                .columnTwo("Type", Icon.called("sign").build())
+                .columnThree("Location", Icon.called("map-marker").build())
+                .columnFour("Area", Icon.called("map").of(Family.REGULAR).build());
 
         getClaimsOf(playerUUID).stream()
                 .sorted((one, two) -> Integer.compare(two.getArea(), one.getArea()))
                 .forEach(
-                        claim -> table.addRow(formatLocation(claim.getGreaterBoundaryCorner()), claim.getArea())
+                        claim -> table.addRow(claim.getName(), formatType(claim), formatLocation(claim.getGreaterBoundaryCorner()), claim.getArea())
                 );
 
         return table.build();
     }
+
+    private String formatLocation(Vector3i greaterBoundaryCorner) {
+        return "x: " + greaterBoundaryCorner.getX() + "y: " + greaterBoundaryCorner.getY() + " z: " + greaterBoundaryCorner.getZ();
+    }
+
+    private String formatType(Claim claim) {
+        return claim.getType() + "(" + (claim.isCuboid() ? "Cuboid" : "Square") + ")";
+    }
+
 }
