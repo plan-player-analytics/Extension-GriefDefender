@@ -14,7 +14,7 @@
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT.IN NO EVENT SHALL THE
     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -108,7 +108,7 @@ public class GriefDefenderExtension implements DataExtension {
                 sub++;
             } else admin++;
         }
-        return basic + "+" + town + "+" + sub + "+" + admin ;
+        return "basic: " + basic + ",town: " + town + ",sub claims: " + sub + ",admin: " + admin ;
     }
 
     @NumberProvider(
@@ -126,26 +126,26 @@ public class GriefDefenderExtension implements DataExtension {
     }
 
     @NumberProvider(
-            text = "Inital Blocks",
-            description = "Inital Blocks that player first play on your server",
+            text = "Initial Blocks",
+            description = "Initial Blocks that player first play on your server",
             iconName = "cube",
             iconColor = Color.BLUE_GREY,
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public int initBlocks(UUID playerUUID) {
+    public int initialBlocks(UUID playerUUID) {
         return getPlayerData(playerUUID).getInitialClaimBlocks();
     }
 
     @NumberProvider(
-            text = "Bnous Blocks",
-            description = "Bnous Blocks that player get reward",
+            text = "Bonus Blocks",
+            description = "Bonus Blocks that player get reward",
             iconName = "medal",
             iconColor = Color.BLUE_GREY,
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public int bnousBlocks(UUID playerUUID) {
+    public int bonusBlocks(UUID playerUUID) {
         return getPlayerData(playerUUID).getBonusClaimBlocks();
     }
 
