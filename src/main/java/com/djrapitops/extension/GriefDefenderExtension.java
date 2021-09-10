@@ -34,15 +34,17 @@ import com.djrapitops.plan.extension.table.Table;
 import com.flowpowered.math.vector.Vector3i;
 import com.griefdefender.api.Core;
 import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.User;
 import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.data.PlayerData;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
  * DataExtension for the GriefDefender plugin.
- *
+ * <p>
  * Port of the GriefPreventionSponge extension by AuroraLS3
  *
  * @author Vankka
@@ -55,10 +57,8 @@ import java.util.UUID;
 )
 public class GriefDefenderExtension implements DataExtension {
 
-    private final Core api;
 
     public GriefDefenderExtension() {
-        api = GriefDefender.getCore();
     }
 
     @Override
@@ -68,12 +68,23 @@ public class GriefDefenderExtension implements DataExtension {
         };
     }
 
-    private List<Claim> getClaimsOf(UUID playerUUID) {
-        return api.getAllPlayerClaims(playerUUID);
+    private Core getApi() {
+        try {
+            return GriefDefender.getCore();
+        } catch (IllegalStateException griefDefenderNotEnabled) {
+            throw new NotReadyException();
+        }
     }
+
+    private List<Claim> getClaimsOf(UUID playerUUID) {
+        return getApi().getAllPlayerClaims(playerUUID);
+    }
+
     private PlayerData getPlayerData(UUID playerUUID) {
         try {
-            return api.getUser(playerUUID).getPlayerData();
+            return Optional.ofNullable(getApi().getUser(playerUUID))
+                    .map(User::getPlayerData)
+                    .orElseThrow(NotReadyException::new);
         } catch (NullPointerException e) {
             throw new NotReadyException();
         }
@@ -97,7 +108,7 @@ public class GriefDefenderExtension implements DataExtension {
             showInPlayerTable = true
     )
     public String claimType(UUID playerUUID) {
-        int basic=0, town=0, sub=0, admin=0;
+        int basic = 0, town = 0, sub = 0, admin = 0;
         List<Claim> claimsList = getClaimsOf(playerUUID);
         for (Claim claim : claimsList) {
             if (claim.isBasicClaim()) {
@@ -106,9 +117,9 @@ public class GriefDefenderExtension implements DataExtension {
                 town++;
             } else if (claim.isSubdivision()) {
                 sub++;
-            } else admin++;
+            } else {admin++;}
         }
-        return "basic: " + basic + ",town: " + town + ",sub claims: " + sub + ",admin: " + admin ;
+        return "basic: " + basic + ",town: " + town + ",sub claims: " + sub + ",admin: " + admin;
     }
 
     @NumberProvider(
