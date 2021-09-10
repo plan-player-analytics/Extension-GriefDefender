@@ -144,7 +144,7 @@ public class GriefDefenderExtension implements DataExtension {
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public int initialBlocks(UUID playerUUID) {
+    public long initialBlocks(UUID playerUUID) {
         return getPlayerData(playerUUID).getInitialClaimBlocks();
     }
 
@@ -156,7 +156,7 @@ public class GriefDefenderExtension implements DataExtension {
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public int bonusBlocks(UUID playerUUID) {
+    public long bonusBlocks(UUID playerUUID) {
         return getPlayerData(playerUUID).getBonusClaimBlocks();
     }
 
@@ -168,7 +168,7 @@ public class GriefDefenderExtension implements DataExtension {
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public int accruedBlocks(UUID playerUUID) {
+    public long accruedBlocks(UUID playerUUID) {
         return getPlayerData(playerUUID).getAccruedClaimBlocks();
     }
 
@@ -180,7 +180,7 @@ public class GriefDefenderExtension implements DataExtension {
             iconFamily = Family.REGULAR,
             showInPlayerTable = true
     )
-    public int remainingBlocks(UUID playerUUID) {
+    public long remainingBlocks(UUID playerUUID) {
         return getPlayerData(playerUUID).getRemainingClaimBlocks();
     }
 

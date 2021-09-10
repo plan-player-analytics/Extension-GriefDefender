@@ -40,6 +40,11 @@
                                     <shadedPattern>com.griefdefender.lib.flowpowered</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <artifactSet>
+                                <includes>
+                                    <include></include>
+                                </includes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
