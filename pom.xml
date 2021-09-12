@@ -6,7 +6,7 @@
 
     <groupId>com.djrapitops</groupId>
     <artifactId>Extension-GriefDefender</artifactId>
-    <version>R0.4</version>
+    <version>2.0.0-R0.1</version>
     <build>
         <plugins>
             <plugin>
@@ -40,11 +40,6 @@
                                     <shadedPattern>com.griefdefender.lib.flowpowered</shadedPattern>
                                 </relocation>
                             </relocations>
-                            <artifactSet>
-                                <includes>
-                                    <include></include>
-                                </includes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -62,8 +57,8 @@
             <url>https://repo.spongepowered.org/maven</url>
         </repository>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>griefdefender</id>
+            <url>https://repo.glaremasters.me/repository/bloodshot/</url>
         </repository>
         <repository>
             <id>plan-repo</id>
@@ -72,7 +67,8 @@
     </repositories>
 
     <dependencies>
-        <dependency> <!-- Plan API -->
+        <!-- Plan API -->
+        <dependency>
             <groupId>com.djrapitops</groupId>
             <artifactId>plan-api</artifactId>
             <version>5.2-R0.9</version>
@@ -81,14 +77,13 @@
 
         <!-- Plugin API Dependency -->
         <dependency>
-            <groupId>com.github.bloodmc</groupId>
-            <artifactId>GriefDefenderApi</artifactId>
-            <version>920a610</version>
+            <groupId>com.griefdefender</groupId>
+            <artifactId>api</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Platforms -->
-		
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -99,6 +94,7 @@
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
             <version>7.1.0</version>
+            <scope>provided</scope>
         </dependency>
 		
         <!-- Test Dependencies -->
@@ -106,17 +102,18 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.7.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.10.0</version>
+            <version>3.12.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>3.10.0</version>
+            <version>3.12.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
