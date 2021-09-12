@@ -117,7 +117,9 @@ public class GriefDefenderExtension implements DataExtension {
                 town++;
             } else if (claim.isSubdivision()) {
                 sub++;
-            } else {admin++;}
+            } else {
+                admin++;
+            }
         }
         return "basic: " + basic + ",town: " + town + ",sub claims: " + sub + ",admin: " + admin;
     }
@@ -196,7 +198,7 @@ public class GriefDefenderExtension implements DataExtension {
         getClaimsOf(playerUUID).stream()
                 .sorted((one, two) -> Integer.compare(two.getArea(), one.getArea()))
                 .forEach(
-                        claim -> table.addRow(claim.getName(), formatType(claim), formatLocation(claim.getGreaterBoundaryCorner()), claim.getArea())
+                        claim -> table.addRow(claim.getDisplayName(), formatType(claim), formatLocation(claim.getGreaterBoundaryCorner()), claim.getArea())
                 );
 
         return table.build();
