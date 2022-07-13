@@ -17,7 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE.
 */
-package com.djrapitops.extension;
+package net.playeranalytics.extension.griefdefender;
 
 import com.djrapitops.plan.extension.DataExtension;
 import com.djrapitops.plan.extension.extractor.ExtensionExtractor;
